@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="vald.extractor" />
+
+<meta name="date" content="2026-01-18" />
+
+<title>End-to-End Pipeline: From API to Multi-Sport Analysis</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">End-to-End Pipeline: From API to
+Multi-Sport Analysis</h1>
+<h4 class="author">vald.extractor</h4>
+<h4 class="date">2026-01-18</h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The <code>vald.extractor</code> package provides a robust,
+production-ready pipeline for extracting, cleaning, and analyzing VALD
+ForceDecks data across multiple sports. This vignette demonstrates the
+complete workflow from API authentication to publication-ready
+visualizations.</p>
+<div id="key-problems-solved" class="section level3">
+<h3>Key Problems Solved</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Stability</strong>: Chunked batch processing prevents
+timeout errors when working with large datasets (1000+ tests)</li>
+<li><strong>Data Cleaning</strong>: Automated sports taxonomy mapping
+standardizes inconsistent team/group names</li>
+<li><strong>Reproducibility</strong>: All processing steps are
+documented and version-controlled</li>
+<li><strong>Generic Analysis</strong>: Test-type suffix removal enables
+writing analysis code once that works for all test types</li>
+</ol>
+</div>
+</div>
+<div id="step-1-authentication-and-data-extraction" class="section level2">
+<h2>Step 1: Authentication and Data Extraction</h2>
+<p>First, set your VALD API credentials and extract test/trial data:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(vald.extractor)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Set credentials</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>valdr<span class="sc">::</span><span class="fu">set_credentials</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">client_id     =</span> <span class="st">&quot;your_client_id&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">client_secret =</span> <span class="st">&quot;your_client_secret&quot;</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">tenant_id     =</span> <span class="st">&quot;your_tenant_id&quot;</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">region        =</span> <span class="st">&quot;aue&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Fetch data from 2020 onwards in chunks of 100 tests</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>vald_data <span class="ot">&lt;-</span> <span class="fu">fetch_vald_batch</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  <span class="at">start_date =</span> <span class="st">&quot;2020-01-01T00:00:00Z&quot;</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="at">chunk_size =</span> <span class="dv">100</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co"># Extract components</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>tests_df <span class="ot">&lt;-</span> vald_data<span class="sc">$</span>tests</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>trials_df <span class="ot">&lt;-</span> vald_data<span class="sc">$</span>trials</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Extracted&quot;</span>, <span class="fu">nrow</span>(tests_df), <span class="st">&quot;tests and&quot;</span>, <span class="fu">nrow</span>(trials_df), <span class="st">&quot;trials</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<p><strong>Why chunking matters</strong>: Without chunking, large
+organizations with 5000+ tests will experience API timeout errors. The
+chunked approach processes 100 tests at a time, with fault-tolerant
+error handling that logs issues without halting the entire
+extraction.</p>
+</div>
+<div id="step-2-fetch-and-standardize-metadata" class="section level2">
+<h2>Step 2: Fetch and Standardize Metadata</h2>
+<p>Retrieve athlete profiles and group memberships via OAuth2:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Fetch raw metadata</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>metadata <span class="ot">&lt;-</span> <span class="fu">fetch_vald_metadata</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">client_id     =</span> <span class="st">&quot;your_client_id&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">client_secret =</span> <span class="st">&quot;your_client_secret&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">tenant_id     =</span> <span class="st">&quot;your_tenant_id&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">region        =</span> <span class="st">&quot;aue&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># Standardize: unnest group memberships and create unified athlete records</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>athlete_metadata <span class="ot">&lt;-</span> <span class="fu">standardize_vald_metadata</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="at">profiles =</span> metadata<span class="sc">$</span>profiles,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="at">groups   =</span> metadata<span class="sc">$</span>groups</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="fu">head</span>(athlete_metadata)</span></code></pre></div>
+<div id="understanding-the-metadata-structure" class="section level3">
+<h3>Understanding the Metadata Structure</h3>
+<p>The VALD API stores group memberships as a nested array
+(<code>groupIds</code>). The <code>standardize_vald_metadata()</code>
+function:</p>
+<ol style="list-style-type: decimal">
+<li>Unnests the array so each athlete-group pair gets its own row</li>
+<li>Joins with group names from the Groups API</li>
+<li>Collapses back to one row per athlete with all group names
+concatenated</li>
+</ol>
+<p><strong>Result</strong>: A clean metadata table where
+<code>all_group_names</code> contains “Football, U18, Elite” for an
+athlete in multiple groups.</p>
+</div>
+</div>
+<div id="step-3-apply-sports-taxonomy" class="section level2">
+<h2>Step 3: Apply Sports Taxonomy</h2>
+<p>Map inconsistent team names to standardized sports categories:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>athlete_metadata <span class="ot">&lt;-</span> <span class="fu">classify_sports</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">data =</span> athlete_metadata,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">group_col =</span> <span class="st">&quot;all_group_names&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">output_col =</span> <span class="st">&quot;sports_clean&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># Inspect the mapping</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">table</span>(athlete_metadata<span class="sc">$</span>sports_clean)</span></code></pre></div>
+<p><strong>The Value Add</strong>: This regex-based classification is
+the core innovation. Organizations often have:</p>
+<ul>
+<li>“Football”, “Soccer”, “FSI” → all mapped to “Football”</li>
+<li>“Track”, “Field”, “T&amp;F” → all mapped to “Track &amp; Field”</li>
+</ul>
+<p>Without this automation, analysts spend hours manually categorizing
+athletes. The package includes patterns for 15+ sports and can be easily
+extended.</p>
+</div>
+<div id="step-4-transform-to-wide-format-and-join" class="section level2">
+<h2>Step 4: Transform to Wide Format and Join</h2>
+<p>Combine trials into tests, pivot to wide format, and merge with
+metadata:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Join trials and tests</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>all_data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(trials_df, tests_df, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;testId&quot;</span>, <span class="st">&quot;athleteId&quot;</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># Aggregate trials and pivot to wide format</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>structured_test_data <span class="ot">&lt;-</span> all_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="fu">group_by</span>(athleteId, testId, testType, recordedUTC,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>           recordedDateOffset, trialLimb, definition_name) <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="at">mean_result =</span> <span class="fu">mean</span>(<span class="fu">as.numeric</span>(value), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="at">mean_weight =</span> <span class="fu">mean</span>(<span class="fu">as.numeric</span>(weight), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>    <span class="at">TestTimestampUTC =</span> lubridate<span class="sc">::</span><span class="fu">ymd_hms</span>(recordedUTC),</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>    <span class="at">TestTimestampLocal =</span> TestTimestampUTC <span class="sc">+</span> lubridate<span class="sc">::</span><span class="fu">minutes</span>(recordedDateOffset),</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    <span class="at">Testdate =</span> <span class="fu">as.Date</span>(TestTimestampLocal)</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  <span class="fu">select</span>(athleteId, Testdate, testId, testType, trialLimb,</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>         definition_name, mean_result, mean_weight) <span class="sc">%&gt;%</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(athleteId, Testdate, testId, mean_weight),</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="fu">c</span>(definition_name, trialLimb, testType),</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>    <span class="at">values_from =</span> mean_result,</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">&quot;{definition_name}_{trialLimb}_{testType}&quot;</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Weight_on_Test_Day =</span> mean_weight)</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co"># Join with metadata</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>final_analysis_data <span class="ot">&lt;-</span> structured_test_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">profileId =</span> <span class="fu">as.character</span>(athleteId)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>    athlete_metadata <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">profileId =</span> <span class="fu">as.character</span>(profileId)),</span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">&quot;profileId&quot;</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>    <span class="at">Testdate =</span> <span class="fu">as.Date</span>(Testdate),</span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a>    <span class="at">dateofbirth =</span> <span class="fu">as.Date</span>(dateOfBirth),</span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>    <span class="at">age =</span> <span class="fu">as.numeric</span>((Testdate <span class="sc">-</span> dateofbirth) <span class="sc">/</span> <span class="fl">365.25</span>),</span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a>    <span class="at">sports =</span> sports_clean</span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a>  )</span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Final dataset:&quot;</span>, <span class="fu">nrow</span>(final_analysis_data), <span class="st">&quot;rows with&quot;</span>,</span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a>    <span class="fu">ncol</span>(final_analysis_data), <span class="st">&quot;columns</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="step-5-split-by-test-type" class="section level2">
+<h2>Step 5: Split by Test Type</h2>
+<p>The “Don’t Repeat Yourself” (DRY) principle in action:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Split into separate datasets per test type</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>test_datasets <span class="ot">&lt;-</span> <span class="fu">split_by_test</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">data =</span> final_analysis_data,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">metadata_cols =</span> <span class="fu">c</span>(<span class="st">&quot;profileId&quot;</span>, <span class="st">&quot;sex&quot;</span>, <span class="st">&quot;Testdate&quot;</span>, <span class="st">&quot;dateofbirth&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>                    <span class="st">&quot;age&quot;</span>, <span class="st">&quot;testId&quot;</span>, <span class="st">&quot;Weight_on_Test_Day&quot;</span>, <span class="st">&quot;sports&quot;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co"># Access individual test types</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>cmj_data <span class="ot">&lt;-</span> test_datasets<span class="sc">$</span>CMJ</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>dj_data <span class="ot">&lt;-</span> test_datasets<span class="sc">$</span>DJ</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co"># Crucially: column names are now generic</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(cmj_data))</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co"># &quot;profileId&quot;, &quot;sex&quot;, &quot;Testdate&quot;, &quot;PEAK_FORCE_Both&quot;, &quot;JUMP_HEIGHT_Both&quot;, ...</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co"># Note: &quot;_CMJ&quot; suffix has been removed!</span></span></code></pre></div>
+<p><strong>Why this matters</strong>: You can now write one analysis
+function that works for all test types:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>analyze_peak_force <span class="ot">&lt;-</span> <span class="cf">function</span>(test_data) {</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">summary</span>(test_data<span class="sc">$</span>PEAK_FORCE_Both)  <span class="co"># Works for CMJ, DJ, ISO, etc.</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>}</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co"># Apply to all test types</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="fu">lapply</span>(test_datasets, analyze_peak_force)</span></code></pre></div>
+<p>Without suffix removal, you’d need separate code for
+<code>PEAK_FORCE_Both_CMJ</code>, <code>PEAK_FORCE_Both_DJ</code>,
+etc.</p>
+</div>
+<div id="step-6-patch-missing-metadata-optional" class="section level2">
+<h2>Step 6: Patch Missing Metadata (Optional)</h2>
+<p>Fix missing or incorrect demographic data:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Create an Excel file with: profileId, sex, dateOfBirth</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co"># Example: corrections.xlsx with rows like:</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#   profileId         sex       dateOfBirth</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#   abc123           Male      1995-03-15</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#   def456           Female    1998-07-22</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>cmj_data <span class="ot">&lt;-</span> <span class="fu">patch_metadata</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">data =</span> cmj_data,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="at">patch_file =</span> <span class="st">&quot;corrections.xlsx&quot;</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="at">patch_sheet =</span> <span class="dv">1</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="at">id_col =</span> <span class="st">&quot;profileId&quot;</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">fields_to_patch =</span> <span class="fu">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;dateOfBirth&quot;</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>)</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co"># Verify corrections</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="fu">table</span>(cmj_data<span class="sc">$</span>sex)  <span class="co"># &quot;Unknown&quot; values should now be fixed</span></span></code></pre></div>
+</div>
+<div id="step-7-generate-summary-statistics" class="section level2">
+<h2>Step 7: Generate Summary Statistics</h2>
+<p>Create publication-ready summary tables:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>cmj_summary <span class="ot">&lt;-</span> <span class="fu">summary_vald_metrics</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">data =</span> cmj_data,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">group_vars =</span> <span class="fu">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;sports&quot;</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">exclude_cols =</span> <span class="fu">c</span>(<span class="st">&quot;profileId&quot;</span>, <span class="st">&quot;testId&quot;</span>, <span class="st">&quot;Testdate&quot;</span>, <span class="st">&quot;dateofbirth&quot;</span>, <span class="st">&quot;age&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co"># View summary</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="fu">print</span>(cmj_summary)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co"># Export to CSV</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="fu">write.csv</span>(cmj_summary, <span class="st">&quot;cmj_summary_by_sport_sex.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p><strong>Output example</strong>:</p>
+<pre><code>sex    sports      PEAK_FORCE_Both_Mean  PEAK_FORCE_Both_SD  PEAK_FORCE_Both_CV  PEAK_FORCE_Both_N
+Male   Football    2450.32               245.67              10.02               45
+Male   Basketball  2310.45               198.23              8.58                32
+Female Football    1980.12               187.45              9.47                38</code></pre>
+</div>
+<div id="step-8-visualize-trends" class="section level2">
+<h2>Step 8: Visualize Trends</h2>
+<p>Track performance over time:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co"># Plot CMJ peak force trends by athlete</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="fu">plot_vald_trends</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">data =</span> cmj_data,</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="at">date_col =</span> <span class="st">&quot;Testdate&quot;</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  <span class="at">metric_col =</span> <span class="st">&quot;PEAK_FORCE_Both&quot;</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  <span class="at">group_col =</span> <span class="st">&quot;profileId&quot;</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  <span class="at">facet_col =</span> <span class="st">&quot;sex&quot;</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;CMJ Peak Force Trends by Athlete&quot;</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  <span class="at">smooth =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>)</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co"># Plot sport-level averages over time</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>sport_trends <span class="ot">&lt;-</span> cmj_data <span class="sc">%&gt;%</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>  <span class="fu">group_by</span>(Testdate, sports) <span class="sc">%&gt;%</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_force =</span> <span class="fu">mean</span>(PEAK_FORCE_Both, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="fu">plot_vald_trends</span>(</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>  <span class="at">data =</span> sport_trends,</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>  <span class="at">date_col =</span> <span class="st">&quot;Testdate&quot;</span>,</span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>  <span class="at">metric_col =</span> <span class="st">&quot;avg_force&quot;</span>,</span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>  <span class="at">group_col =</span> <span class="st">&quot;sports&quot;</span>,</span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;Average CMJ Peak Force by Sport Over Time&quot;</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="step-9-compare-across-groups" class="section level2">
+<h2>Step 9: Compare Across Groups</h2>
+<p>Create boxplots for cross-sectional comparisons:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">plot_vald_compare</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="at">data =</span> cmj_data,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">metric_col =</span> <span class="st">&quot;PEAK_FORCE_Both&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">group_col =</span> <span class="st">&quot;sports&quot;</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">fill_col =</span> <span class="st">&quot;sex&quot;</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;CMJ Peak Force Comparison by Sport and Sex&quot;</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>)</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co"># Compare jump height</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="fu">plot_vald_compare</span>(</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  <span class="at">data =</span> cmj_data,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>  <span class="at">metric_col =</span> <span class="st">&quot;JUMP_HEIGHT_Both&quot;</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  <span class="at">group_col =</span> <span class="st">&quot;sports&quot;</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  <span class="at">fill_col =</span> <span class="st">&quot;sex&quot;</span>,</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;CMJ Jump Height Comparison&quot;</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="advanced-multi-test-analysis" class="section level2">
+<h2>Advanced: Multi-Test Analysis</h2>
+<p>Analyze multiple test types simultaneously:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Define a function to extract a common metric across test types</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>compare_metric_across_tests <span class="ot">&lt;-</span> <span class="cf">function</span>(test_datasets, <span class="at">metric =</span> <span class="st">&quot;PEAK_FORCE_Both&quot;</span>) {</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">names</span>(test_datasets), <span class="cf">function</span>(test_name) {</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>    test_data <span class="ot">&lt;-</span> test_datasets[[test_name]]</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="cf">if</span> (metric <span class="sc">%in%</span> <span class="fu">names</span>(test_data)) {</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>        <span class="at">testType =</span> test_name,</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>        <span class="at">metric =</span> metric,</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(test_data[[metric]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>        <span class="at">sd =</span> <span class="fu">sd</span>(test_data[[metric]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>        <span class="at">n =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(test_data[[metric]]))</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>      )</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>    }</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>  })</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, results)</span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a>}</span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co"># Compare peak force across CMJ, DJ, and ISO</span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>force_comparison <span class="ot">&lt;-</span> <span class="fu">compare_metric_across_tests</span>(test_datasets, <span class="st">&quot;PEAK_FORCE_Both&quot;</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="fu">print</span>(force_comparison)</span></code></pre></div>
+</div>
+<div id="best-practices-for-production-use" class="section level2">
+<h2>Best Practices for Production Use</h2>
+<div id="schedule-regular-updates" class="section level3">
+<h3>1. Schedule Regular Updates</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Weekly refresh script</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">library</span>(vald.extractor)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co"># Fetch only new data since last update</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>last_update <span class="ot">&lt;-</span> <span class="st">&quot;2024-01-01T00:00:00Z&quot;</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> <span class="fu">fetch_vald_batch</span>(</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>  <span class="at">start_date =</span> last_update,</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>  <span class="at">chunk_size =</span> <span class="dv">100</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>)</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co"># Append to existing database</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;vald_database.RData&quot;</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>updated_tests <span class="ot">&lt;-</span> <span class="fu">rbind</span>(existing_tests, new_data<span class="sc">$</span>tests)</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>updated_trials <span class="ot">&lt;-</span> <span class="fu">rbind</span>(existing_trials, new_data<span class="sc">$</span>trials)</span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="fu">save</span>(updated_tests, updated_trials, <span class="at">file =</span> <span class="st">&quot;vald_database.RData&quot;</span>)</span></code></pre></div>
+</div>
+<div id="error-logging" class="section level3">
+<h3>2. Error Logging</h3>
+<p>The chunked extraction automatically logs errors without halting:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Errors are printed to console with chunk information:</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co"># &quot;ERROR on chunk 23 (rows 2201-2300): API timeout&quot;</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co"># &quot;Continuing to next chunk...&quot;</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co"># This ensures partial data extraction even if some chunks fail</span></span></code></pre></div>
+</div>
+<div id="version-control-your-taxonomy" class="section level3">
+<h3>3. Version Control Your Taxonomy</h3>
+<p>Store your sports classification rules in a separate config file:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># sports_taxonomy.R</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>sports_patterns <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">Football =</span> <span class="st">&quot;Football|FSI|TCFC|MCFC|Soccer&quot;</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">Basketball =</span> <span class="st">&quot;Basketball|BBall&quot;</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">Cricket =</span> <span class="st">&quot;Cricket&quot;</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="co"># ... add your organization&#39;s patterns</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co"># Then use in classify_sports()</span></span></code></pre></div>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>The <code>vald.extractor</code> package transforms raw VALD API data
+into analysis-ready datasets with:</p>
+<ul>
+<li><strong>Fault-tolerant extraction</strong>: Chunked processing with
+error handling</li>
+<li><strong>Automated taxonomy</strong>: Regex-based sports
+classification saves hours of manual work</li>
+<li><strong>Generic programming</strong>: Suffix removal enables DRY
+analysis code</li>
+<li><strong>Publication-ready outputs</strong>: Summary tables and
+professional visualizations</li>
+</ul>
+<p>This workflow is production-tested with 10,000+ tests across 15+
+sports and is designed for CRAN submission.</p>
+</div>
+<div id="next-steps" class="section level2">
+<h2>Next Steps</h2>
+<ul>
+<li>Customize sports taxonomy for your organization</li>
+<li>Integrate with existing reporting pipelines</li>
+<li>Schedule automated weekly updates</li>
+<li>Explore advanced visualizations with <code>ggplot2</code>
+extensions</li>
+</ul>
+<p>For issues or feature requests, visit: <a href="https://github.com/praveenmaths89/vald.extractor/issues">GitHub
+Issues</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
