@@ -66,7 +66,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Usha Anathakumar \email{usha@som.iitb.ac.in}
+  \item Usha Ananthakumar \email{usha@som.iitb.ac.in}
 }
 
 }
